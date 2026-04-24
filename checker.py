@@ -1,4 +1,7 @@
+import ctypes
+import os
 import subprocess
+import sys
 import threading
 import tkinter as tk
 from tkinter import ttk
@@ -7,6 +10,23 @@ POWERSHELL_COMMAND = (
     "[System.Text.Encoding]::ASCII.GetString((Get-SecureBootUEFI db).Bytes)"
     " -match 'Windows UEFI CA 2023'"
 )
+
+
+def _ensure_admin() -> None:
+    """管理者権限がなければ UAC 昇格して再起動する（Windows のみ）。"""
+    if sys.platform != "win32":
+        return
+    try:
+        if ctypes.windll.shell32.IsUserAnAdmin():
+            return
+    except Exception:
+        return
+    if getattr(sys, "frozen", False):
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, None, None, 1)
+    else:
+        script = os.path.abspath(sys.argv[0])
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, f'"{script}"', None, 1)
+    sys.exit(0)
 
 COLOR_BG = "#1e1e2e"
 COLOR_FG = "#cdd6f4"
@@ -199,6 +219,7 @@ def build_ui(root: tk.Tk) -> None:
 
 
 def main() -> None:
+    _ensure_admin()
     root = tk.Tk()
     build_ui(root)
     root.mainloop()
