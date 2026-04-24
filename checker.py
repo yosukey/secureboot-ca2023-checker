@@ -7,8 +7,10 @@ import tkinter as tk
 from tkinter import ttk
 
 POWERSHELL_COMMAND = (
-    "[System.Text.Encoding]::ASCII.GetString((Get-SecureBootUEFI db).Bytes)"
+    "try { "
+    "[System.Text.Encoding]::ASCII.GetString((Get-SecureBootUEFI db -ErrorAction Stop).Bytes)"
     " -match 'Windows UEFI CA 2023'"
+    " } catch { 'UNAVAILABLE' }"
 )
 
 
@@ -57,6 +59,15 @@ def run_check(
             )
             stdout = (proc.stdout or b"").decode("utf-8", errors="replace").strip()
             stderr = (proc.stderr or b"").decode("utf-8", errors="replace").strip()
+
+            if stdout == "UNAVAILABLE":
+                btn.after(0, lambda: _show_error(
+                    "Secure Boot の UEFI 変数にアクセスできませんでした。\n"
+                    "Secure Boot が無効、または非 UEFI 環境（仮想マシン等）の\n"
+                    "可能性があります。",
+                    result_var, status_var, result_label, btn,
+                ))
+                return
 
             if proc.returncode != 0 and not stdout:
                 raise RuntimeError(stderr or f"exit code {proc.returncode}")
