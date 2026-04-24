@@ -33,12 +33,10 @@ def run_check(
             proc = subprocess.run(
                 ["powershell.exe", "-NoProfile", "-Command", POWERSHELL_COMMAND],
                 capture_output=True,
-                text=True,
-                encoding="utf-8",
                 timeout=30,
             )
-            stdout = proc.stdout.strip()
-            stderr = proc.stderr.strip()
+            stdout = (proc.stdout or b"").decode("utf-8", errors="replace").strip()
+            stderr = (proc.stderr or b"").decode("utf-8", errors="replace").strip()
 
             if proc.returncode != 0 and not stdout:
                 raise RuntimeError(stderr or f"exit code {proc.returncode}")
