@@ -38,9 +38,4 @@ Windows の Secure Boot データベース (db) に **Windows UEFI CA 2023** 証
 
 または、ファイルを右クリック →「プロパティ」→「セキュリティ」欄の「許可する」にチェックを入れて「OK」でも解除できます。
 
-心配な場合はソースコード (`checker.py`) を直接確認し、Python 環境で実行してください。
-
-```bash
-pip install pyinstaller  # ビルドする場合のみ
-python checker.py
-```
+確認が終わったら exe ファイルは削除して構いません。インストールは行っておらず、削除後に残存物はありません。
