@@ -33,12 +33,10 @@ def run_check(
             proc = subprocess.run(
                 ["powershell.exe", "-NoProfile", "-Command", POWERSHELL_COMMAND],
                 capture_output=True,
-                text=True,
-                encoding="utf-8",
                 timeout=30,
             )
-            stdout = proc.stdout.strip()
-            stderr = proc.stderr.strip()
+            stdout = (proc.stdout or b"").decode("utf-8", errors="replace").strip()
+            stderr = (proc.stderr or b"").decode("utf-8", errors="replace").strip()
 
             if proc.returncode != 0 and not stdout:
                 raise RuntimeError(stderr or f"exit code {proc.returncode}")
@@ -109,7 +107,7 @@ def build_ui(root: tk.Tk) -> None:
     tk.Label(
         header,
         text="Secure Boot UEFI CA 2023 Checker",
-        font=("Segoe UI", 14, "bold"),
+        font=("Yu Gothic UI", 14, "bold"),
         bg=COLOR_BG,
         fg=COLOR_FG,
     ).pack(anchor="w")
@@ -117,7 +115,7 @@ def build_ui(root: tk.Tk) -> None:
     tk.Label(
         header,
         text="Secure Boot データベース (db) に Windows UEFI CA 2023 が\n含まれているかを確認します。",
-        font=("Segoe UI", 9),
+        font=("Yu Gothic UI", 9),
         bg=COLOR_BG,
         fg=COLOR_FG,
         justify="left",
@@ -133,7 +131,7 @@ def build_ui(root: tk.Tk) -> None:
     result_label = tk.Label(
         result_frame,
         textvariable=result_var,
-        font=("Segoe UI", 11),
+        font=("Yu Gothic UI", 11),
         bg=COLOR_SURFACE,
         fg=COLOR_FG,
         wraplength=420,
@@ -148,7 +146,7 @@ def build_ui(root: tk.Tk) -> None:
     tk.Label(
         root,
         textvariable=status_var,
-        font=("Segoe UI", 8),
+        font=("Yu Gothic UI", 8),
         bg=COLOR_BG,
         fg="#6c7086",
         anchor="w",
@@ -161,7 +159,7 @@ def build_ui(root: tk.Tk) -> None:
     check_btn = tk.Button(
         btn_frame,
         text="チェック開始",
-        font=("Segoe UI", 10, "bold"),
+        font=("Yu Gothic UI", 10, "bold"),
         bg=COLOR_BTN,
         fg=COLOR_BTN_FG,
         activebackground="#74c7ec",
@@ -180,7 +178,7 @@ def build_ui(root: tk.Tk) -> None:
     tk.Button(
         btn_frame,
         text="閉じる",
-        font=("Segoe UI", 10),
+        font=("Yu Gothic UI", 10),
         bg=COLOR_SURFACE,
         fg=COLOR_FG,
         activebackground="#45475a",
