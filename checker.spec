@@ -1,4 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
+import os
+
+_version = os.environ.get("APP_VERSION", "")
+_exe_name = f"SecureBootCA2023Checker-{_version}" if _version else "SecureBootCA2023Checker"
 
 a = Analysis(
     ["checker.py"],
@@ -21,7 +25,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name="SecureBootCA2023Checker",
+    name=_exe_name,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
